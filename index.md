@@ -9,6 +9,10 @@
 
 - Exécuter le fichier `data-type.sql` qui insère les différents types.
 
+- Ajouter la fonction `maj_efficacite`.
+
+- Éxécuter le fichier `data-efficacite.sql` afin de modifier les efficacités.
+
 
 ## Ajout d'un pokémon à un dresseur
 
