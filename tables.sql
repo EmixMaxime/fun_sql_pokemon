@@ -26,8 +26,8 @@ CREATE TABLE pokemon (
   evolution integer REFERENCES pokemon(id),
 
   -- Un pokémon peut avoir un type ou deux
-  type_id_1 varchar(3) NOT NULL REFERENCES type(nom),
-  type_id_2 varchar(3) REFERENCES type(nom)
+  type_id_1 varchar(3) NOT NULL REFERENCES type(id),
+  type_id_2 varchar(3) REFERENCES type(id)
 );
 
 CREATE TABLE dresseur(
