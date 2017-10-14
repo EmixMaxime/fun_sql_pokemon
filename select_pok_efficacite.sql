@@ -1,8 +1,8 @@
-CREATE OR REPLACE FUNCTION select_pok_efficacite(pokemon_id1 int, pokemon_id2 int) RETURNS TABLE(taux integer)
+CREATE OR REPLACE FUNCTION select_pok_efficacite(pokemon_id1 int, pokemon_id2 int) RETURNS TABLE(taux float)
 AS $$
 BEGIN
   RETURN QUERY
-    SELECT taux
+    SELECT efficacite.taux
     FROM efficacite
     WHERE efficacite.type_id_1 = 
       (
