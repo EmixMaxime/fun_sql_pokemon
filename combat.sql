@@ -34,36 +34,10 @@ BEGIN
   tour := 1;
  
   -- Assigne une efficacite d'un pokémon sur l'autre
-	SELECT taux INTO efficacite_pok1_sur_pok2
-	FROM efficacite
-	WHERE efficacite.type_id_1 = 
-		(
-      SELECT pokemon.type_id_1 
-        FROM pokemon
-        WHERE pokemon.id = vdresseur_pok1.pokemon_id
-    )
-	AND efficacite.type_id_2 = 
-		(
-      SELECT pokemon.type_id_1
-		  FROM pokemon
-		  WHERE pokemon.id = vdresseur_pok2.pokemon_id
-    );
+  SELECT select_pok_efficacite(vdresseur_pok1.pokemon_id, vdresseur_pok2.pokemon_id) INTO efficacite_pok1_sur_pok2;
 
-	SELECT taux INTO efficacite_pok2_sur_pok1
-	FROM efficacite
-	WHERE efficacite.type_id_1 = 
-		(
-      SELECT pokemon.type_id_1 
-		  FROM pokemon
-		  WHERE pokemon.id = vdresseur_pok2.pokemon_id
-    )
-  AND efficacite.type_id_2 = 
-		(
-      SELECT pokemon.type_id_1 
-	  	FROM pokemon
-		  WHERE pokemon.id = vdresseur_pok1.pokemon_id
-    );
-	
+  SELECT select_pok_efficacite(vdresseur_pok2.pokemon_id, vdresseur_pok1.pokemon_id) INTO efficacite_pok2_sur_pok1;
+
   -- Détermine les dégâts d'un pokemon sur un autre
 	degat_pok1_sur_pok2 = vdresseur_pok1.attaque * efficacite_pok1_sur_pok2 - vdresseur_pok2.defense;
 	degat_pok2_sur_pok1 = vdresseur_pok2.attaque * efficacite_pok2_sur_pok1 - vdresseur_pok1.defense;
