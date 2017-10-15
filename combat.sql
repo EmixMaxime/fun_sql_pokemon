@@ -97,17 +97,12 @@ BEGIN
     numcombattant := 1;
     gagnant := p_dresseur_pok1;
 
-    UPDATE dresseur_pokemon
-      SET points_evolution = points_evolution+1
-      WHERE id = p_dresseur_pok1;
-
+    PERFORM dresseur_pokemon_evolution(p_dresseur_pok1);
   ELSE
     numcombattant := 2; 
     gagnant := p_dresseur_pok2;
 
-    UPDATE dresseur_pokemon
-      SET points_evolution = points_evolution + 1
-      WHERE id = p_dresseur_pok2;
+    PERFORM dresseur_pokemon_evolution(p_dresseur_pok2);
   END IF;
 
   -- Retourne le gagnant
