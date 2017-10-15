@@ -2,16 +2,15 @@ CREATE OR REPLACE FUNCTION creer_tournoi(p_nom varchar, p_lieu varchar, p_date d
 AS $$
 
   DECLARE
-    v_date date;
     diff_days integer;
     diff_months integer;
     diff_years integer;
 
   BEGIN
     -- La date doit être dans le futur
-    SELECT EXTRACT(DAY FROM age(v_date, NOW())) INTO diff_days;
-    SELECT EXTRACT(MONTH FROM age(v_date, NOW())) INTO diff_months;
-    SELECT EXTRACT(YEAR FROM age(v_date, NOW())) INTO diff_years;
+    SELECT EXTRACT(DAY FROM age(p_date, NOW())) INTO diff_days;
+    SELECT EXTRACT(MONTH FROM age(p_date, NOW())) INTO diff_months;
+    SELECT EXTRACT(YEAR FROM age(p_date, NOW())) INTO diff_years;
 
     -- La date est passé
     IF diff_days < 0 OR diff_months < 0 OR diff_years < 0 THEN
@@ -24,7 +23,7 @@ AS $$
     END IF;
 
     INSERT INTO tournoi(nom, lieu, date, capacite) VALUES (
-      p_nom, p_lieu, v_date, p_capacite
+      p_nom, p_lieu, p_date, p_capacite
     );
   END;
 
