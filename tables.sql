@@ -3,7 +3,6 @@ DROP TABLE IF EXISTS efficacite CASCADE;
 DROP TABLE IF EXISTS pokemon CASCADE;
 DROP TABLE IF EXISTS dresseur CASCADE;
 DROP TABLE IF EXISTS dresseur_pokemon CASCADE;
-DROP TABLE IF EXISTS tournoi CASCADE;
 DROP TABLE IF EXISTS participant CASCADE;
 
 CREATE TABLE type (
@@ -52,13 +51,16 @@ CREATE TABLE dresseur_pokemon(
   dresseur_id int NOT NULL REFERENCES dresseur(id)
 );
 
+DROP TABLE IF EXISTS tournoi CASCADE;
 CREATE TABLE tournoi(
   id serial PRIMARY KEY,
   nom varchar(100) NOT NULL,
   lieu varchar(100) NOT NULL,
   capacite int DEFAULT 4,
   date date NOT NULL,
-  debut int DEFAULT 0
+  en_cours int DEFAULT 0,
+  termine int DEFAULT 0,
+  UNIQUE(nom, lieu)
 );
 
 CREATE TABLE participant(
