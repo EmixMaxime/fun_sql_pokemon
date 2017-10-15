@@ -19,18 +19,20 @@ DECLARE
   vdresseur_pok1 dresseur_pokemon%ROWTYPE;
   vdresseur_pok2 dresseur_pokemon%ROWTYPE;
 
+  dresseurCursor CURSOR FOR
+    SELECT * FROM dresseur_pokemon
+    WHERE id = p_dresseur_pok1
+    OR    id = p_dresseur_pok2
+  ;
+
 BEGIN
 
-  -- Assigner les variables ROWTYPE
-  -- @TODO: create a vue !
-	SELECT id,attaque,vie,defense,vitesse,points_evolution,pokemon_id,dresseur_id INTO vdresseur_pok1 
-	FROM dresseur_pokemon
-	WHERE id = p_dresseur_pok1;
+  -- Récupération des dresseur_pokemon !
+  OPEN dresseurCursor;
+    FETCH dresseurCursor INTO vdresseur_pok1;
+    FETCH dresseurCursor INTO vdresseur_pok2;
+  CLOSE dresseurCursor;
 
-	SELECT id,attaque,vie,defense,vitesse,points_evolution,pokemon_id,dresseur_id INTO vdresseur_pok2 
-	FROM dresseur_pokemon
-	WHERE id = p_dresseur_pok2;
-    
   tour := 1;
  
   -- Assigne une efficacite d'un pokémon sur l'autre
