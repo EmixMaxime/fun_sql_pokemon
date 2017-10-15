@@ -19,11 +19,14 @@
 ## Tournoi
 | Function                                                                         | Return Type | Example  |
 | -------------------------------------------------------------------------------- |:-----------:| -----:|
-| `creer_tournoi(p_nom varchar, p_lieu varchar, p_date date, p_capacite int)`      | `void`      | `SELECT creer_tournoi('Super power', 'Calais', '15/10/2017', 4);` |
-| `demarrer_tournoi(p_nom varchar)` | `void` | `SELECT demarrer_tournoi('Super power');` |
+| `creer_tournoi(nom varchar, lieu varchar, date date, capacite int)`      | `void`      | `SELECT creer_tournoi('Super power', 'Calais', '15/10/2017', 4);` |
+| `demarrer_tournoi(nom varchar, lieu varchar)` | `void` | `SELECT demarrer_tournoi('Super power', 'Calais');` |
 
 
 Cette fonction créé un tournoi. Ce tournoi n'est pas démarré, il faudra attendre le jour d'ouverture pour pouvoir l'ouvrir grâce à la fonction `demarrer_tournoi`.
+
+
+**Un tournoi peut avoir le même nom dans différents lieux.**. *Clef unique composée sur `nom` et `lieu`*.
 
 ## Déroulement d'un combat
 - Ajouter la fonction combat `combat`. Rôle : permettre à deux de pokémon de combattre ceux-ci vont s'infliger des dégâts en prenant en compte leur `vitesse` (ordre d'attaque), l'`attaque`, la `défense`, et le `taux` d'`efficacite` par rapport à leurs types respectifs afin de réduire la `vie` de l'autre pokémon à 0. Le pokémon gagnant recevra 1 `points_evolution`.
