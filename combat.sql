@@ -27,6 +27,11 @@ DECLARE
 
 BEGIN
 
+  -- Pokemon identique
+  IF p_dresseur_pok1 = p_dresseur_pok2
+    RAISE EXCEPTION 'Un Pokémon ne peut pas se battre contre lui-même voyons !';
+  END IF;
+
   -- Récupération des dresseur_pokemon !
   OPEN dresseurCursor;
     FETCH dresseurCursor INTO vdresseur_pok1;
