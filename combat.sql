@@ -28,7 +28,7 @@ DECLARE
 BEGIN
 
   -- Pokemon identique
-  IF p_dresseur_pok1 = p_dresseur_pok2
+  IF p_dresseur_pok1 = p_dresseur_pok2 THEN
     RAISE EXCEPTION 'Un Pokémon ne peut pas se battre contre lui-même voyons !';
   END IF;
 
