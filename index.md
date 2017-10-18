@@ -1,6 +1,7 @@
 # Documentation
 
 ## Présentation générale
+Il s'agit ici de créer une base de données sous PostgreSQL permettant de gérer des tournois de Pokémon dans lesquels des Pokémons pourront se battre. Cette base va permettre l'enregistrement de personne en tant que `dresseur`, un recensement des `pokemon`s possibles. Ainsi que la création de tournoi.
 
 ## Insertion des données
 - Ajouter la fonction et son trigger présent dans le fichier `type_id_to_uppercase_func_trig.sql` qui permet de mettre en majuscule les identifiants des `type`s.
@@ -12,6 +13,10 @@
 - Ajouter la fonction `maj_efficacite`.
 
 - Éxécuter le fichier `data-efficacite.sql` afin de modifier les efficacités.
+
+- Ajouter la fonction `maj_evolution`.
+
+- Exécuter le fichier `data-pokemon.sql` afin d'ajouter les pokémons.
 
 
 ## Ajout d'un pokémon à un dresseur
