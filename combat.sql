@@ -19,24 +19,21 @@ DECLARE
   vdresseur_pok1 dresseur_pokemon%ROWTYPE;
   vdresseur_pok2 dresseur_pokemon%ROWTYPE;
 
-  dresseurCursor CURSOR FOR
-    SELECT * FROM dresseur_pokemon
-    WHERE id = p_dresseur_pok1
-    OR    id = p_dresseur_pok2
-  ;
-
 BEGIN
 
   -- Pokemon identique
   IF p_dresseur_pok1 = p_dresseur_pok2 THEN
-    RAISE EXCEPTION 'Un Pokémon ne peut pas se battre contre lui-même voyons !';
+    RAISE EXCEPTION 'Un Pokemon ne peut pas se battre contre lui-meme voyons !';
   END IF;
 
-  -- Récupération des dresseur_pokemon !
-  OPEN dresseurCursor;
-    FETCH dresseurCursor INTO vdresseur_pok1;
-    FETCH dresseurCursor INTO vdresseur_pok2;
-  CLOSE dresseurCursor;
+  -- Assigner les variables ROWTYPE
+	SELECT id,attaque,vie,defense,vitesse,points_evolution,pokemon_id,dresseur_id INTO vdresseur_pok1 
+	FROM dresseur_pokemon
+	WHERE id=p_dresseur_pok1;
+
+	SELECT id,attaque,vie,defense,vitesse,points_evolution,pokemon_id,dresseur_id INTO vdresseur_pok2 
+	FROM dresseur_pokemon
+	WHERE id=p_dresseur_pok2;
 
   tour := 1;
  
@@ -66,23 +63,70 @@ BEGIN
   -- Début du combat !!! 
   WHILE tour != 51 AND v_vie1 > 0 AND v_vie2 > 0 LOOP
 
-    -- perform pg_sleep(2);
+    perform pg_sleep(2);
 
     -- Vérifie le pokémon attaquant en premier et effectue son attaque
     IF vdresseur_pok1.vitesse >= vdresseur_pok2.vitesse THEN
       -- Inflige des dommages à la vie adverse
       v_vie2 := v_vie2 - degat_pok1_sur_pok2;
+      
+      -- Affichage stylé
+      RAISE NOTICE 'Le pokemon 1 attaque !';
+      IF efficacite_pok1_sur_pok2 > 1 THEN
+        RAISE NOTICE 'C est super efficace';
+      ELSE 
+        IF efficacite_pok1_sur_pok2 < 1 THEN
+          RAISE NOTICE 'Ce n est pas tres efficace';
+        END IF;
+      END IF;
+      RAISE NOTICE 'Il reste % PV au pokemon 2',v_vie2;
+      
     ELSE 
       v_vie1 := v_vie1 - degat_pok2_sur_pok1;
+      
+      -- Affichage stylé
+      RAISE NOTICE 'Le pokemon 2 attaque !';
+      IF efficacite_pok2_sur_pok1 > 1 THEN
+        RAISE NOTICE 'C est super efficace';
+      ELSE 
+        IF efficacite_pok2_sur_pok1 < 1 THEN
+          RAISE NOTICE 'Ce n est pas tres efficace';
+        END IF;
+      END IF;
+      RAISE NOTICE 'Il reste % PV au pokemon 1',v_vie1;
+      
     END IF;
 
     -- Le second pokémon attaque s'il a encore de la vie
     IF vdresseur_pok1.vitesse >= vdresseur_pok2.vitesse AND v_vie2 > 0 THEN
       -- Inflige des dommages à la vie adverse
       v_vie1 := v_vie1 - degat_pok2_sur_pok1;
+      
+      -- Affichage stylé
+      RAISE NOTICE 'Le pokemon 2 attaque !';
+      IF efficacite_pok2_sur_pok1 > 1 THEN
+        RAISE NOTICE 'C est super efficace';
+      ELSE 
+        IF efficacite_pok2_sur_pok1 < 1 THEN
+          RAISE NOTICE 'Ce n est pas tres efficace';
+        END IF;
+      END IF;
+      RAISE NOTICE 'Il reste % PV au pokemon 1',v_vie1;
+      
     ELSE 
       IF vdresseur_pok2.vitesse > vdresseur_pok1.vitesse AND v_vie1 > 0 THEN
-        v_vie2 := v_vie2 - degat_pok1_sur_pok2;          
+        v_vie2 := v_vie2 - degat_pok1_sur_pok2; 
+        
+          -- Affichage stylé
+        RAISE NOTICE 'Le pokemon 1 attaque !';
+        IF efficacite_pok1_sur_pok2 > 1 then
+          RAISE NOTICE 'C est super efficace';
+        ELSE 
+          IF efficacite_pok1_sur_pok2 < 1 then
+            RAISE NOTICE 'Ce n est pas tres efficace';
+          END IF;
+        END IF;
+        RAISE NOTICE 'Il reste % PV au pokemon 2',v_vie2;
       END IF;
     END IF;
 
@@ -111,7 +155,7 @@ BEGIN
   END IF;
 
   -- Retourne le gagnant
-  raise notice 'Le gagnant est le pokemon % : Numéro %', numcombattant, gagnant;
+  raise notice 'Le gagnant est le pokemon % : Numero %', numcombattant, gagnant;
   RETURN gagnant;
 
 END;
