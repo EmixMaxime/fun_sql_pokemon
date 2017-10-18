@@ -69,7 +69,7 @@ BEGIN
     -- perform pg_sleep(2);
 
     -- Vérifie le pokémon attaquant en premier et effectue son attaque
-    IF vdresseur_pok1.vitesse > vdresseur_pok2.vitesse THEN
+    IF vdresseur_pok1.vitesse >= vdresseur_pok2.vitesse THEN
       -- Inflige des dommages à la vie adverse
       v_vie2 := v_vie2 - degat_pok1_sur_pok2;
     ELSE 
@@ -77,7 +77,7 @@ BEGIN
     END IF;
 
     -- Le second pokémon attaque s'il a encore de la vie
-    IF vdresseur_pok1.vitesse > vdresseur_pok2.vitesse AND v_vie2 > 0 THEN
+    IF vdresseur_pok1.vitesse >= vdresseur_pok2.vitesse AND v_vie2 > 0 THEN
       -- Inflige des dommages à la vie adverse
       v_vie1 := v_vie1 - degat_pok2_sur_pok1;
     ELSE 
