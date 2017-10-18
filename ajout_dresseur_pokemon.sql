@@ -5,6 +5,7 @@ AS $$
 
   DECLARE
     v_dresseur dresseur%ROWTYPE;
+    v_pokemon pokemon%ROWTYPE;
 
   BEGIN
     -- On récupère les infos du dresseur
@@ -39,7 +40,7 @@ AS $$
       v_dresseur.id
     );
 
-    RAISE NOTICE 'Félicitations ! Le dresseur % a désormais le pokémon % avec ces stats suivantes : % vie % defense % vitesse', v_dresseur.pseudo, v_pokemon.nom, p_vie, p_defense, p_vitesse;
+    RAISE NOTICE 'Félicitations ! Le dresseur % a désormais le pokémon % avec les stats suivantes : % vie, % attaque, % defense, % vitesse', v_dresseur.pseudo, v_pokemon.nom, p_vie, p_attaque, p_defense, p_vitesse;
 
   END;
 
