@@ -24,7 +24,7 @@ CREATE TABLE pokemon (
   taille float,
   evolution integer REFERENCES pokemon(id),
 
-  -- Un pokémon peut avoir un type ou deux
+  -- Un pokémon DOIT avoir un type mais peut en avoir deux.
   type_id_1 varchar(3) NOT NULL REFERENCES type(id),
   type_id_2 varchar(3) REFERENCES type(id)
 );
@@ -60,18 +60,20 @@ CREATE TABLE tournoi(
   date date NOT NULL,
   en_cours int DEFAULT 0,
   termine int DEFAULT 0,
+
   -- un tournoi peut être mensuel dans différentes villes.
   UNIQUE(nom, lieu, date)
 );
 
 CREATE TABLE participant(
   id serial PRIMARY KEY,
-  dresseur_id int REFERENCES dresseur(id),
-  tournoi_id int REFERENCES tournoi(id),
   points int default 0,
 
-  UNIQUE(dresseur_id, tournoi_id),
+  dresseur_id int NOT NULL REFERENCES dresseur(id),
+  tournoi_id int NOT NULL REFERENCES tournoi(id),
 
   -- avec quel pokémon le joueur va faire le tournoi ?
-  dresseur_pokemon_id int REFERENCES dresseur_pokemon(id)
+  dresseur_pokemon_id int NOT NULL REFERENCES dresseur_pokemon(id),
+
+  UNIQUE(dresseur_id, tournoi_id)
 );
