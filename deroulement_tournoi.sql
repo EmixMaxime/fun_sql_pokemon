@@ -19,6 +19,9 @@ AS $$
     -- Le pokemon qui gagne un combat
     v_pokemon_id_gg integer;
 
+    -- l'id du tournoi en cours
+    tournoi_id tournoi.id%TYPE;
+
     -- Ils vont s'affronterrrrrrr
     row_participant1 participant%ROWTYPE;
     row_participant2 participant%ROWTYPE;
@@ -26,25 +29,30 @@ AS $$
     c_selectParticipant CURSOR(nb_round integer) FOR
       SELECT *
           FROM participant
-          INNER JOIN participant ON participant.tournoi_id = NEW.id
-          WHERE participant.points = nb_round * 5;
+          INNER JOIN tournoi
+            ON participant.tournoi_id = tournoi.id
+          WHERE participant.points = nb_round * 5
+          AND tournoi.id = NEW.id;
           -- 5 = le nb de points gagnés lors d'un combat
 
   BEGIN
     nb_round := 0;
+    tournoi_id := NEW.id;
 
     LOOP
       -- Je sélectionne le joueur ayant le max de points
       SELECT MAX(participant.points) INTO v_max_pts
-        FROM tournoi
-        INNER JOIN participant ON participant.tournoi_id = tournoi.id
+        FROM participant
+        INNER JOIN tournoi
+          ON participant.tournoi_id = tournoi.id
         WHERE tournoi.id = NEW.id;
 
       -- Je compte combien de joueurs ont le nombre de points maximum
       -- S'il n'y en a qu'un, c'est celui qui gagne.
       SELECT COUNT(participant.id) INTO v_players_max_pts
         FROM participant
-        INNER JOIN participant ON participant.tournoi_id = tournoi.id
+        INNER JOIN tournoi
+        ON participant.tournoi_id = tournoi.id
         WHERE participant.points = v_max_pts;
 
       -- On a le gagnant, on arrête le déroulement du tournoi
@@ -63,7 +71,13 @@ AS $$
         EXIT WHEN NOT FOUND;
 
         -- récupérer le gagnant et lui attribuer les points
-        
+        SELECT combat(row_participant1.dresseur_pokemon_id, row_participant2.dresseur_pokemon_id) INTO v_pokemon_id_gg;
+
+        UPDATE participant
+          SET points = points + 5
+          WHERE dresseur_pokemon_id = v_pokemon_id_gg
+          AND tournoi_id = tournoi_id;
+
       END LOOP;
 
       nb_round := nb_round +1;
@@ -76,4 +90,4 @@ AS $$
 
   END;
 
-$$ language 'plpgsql'
+$$ language 'plpgsql';
