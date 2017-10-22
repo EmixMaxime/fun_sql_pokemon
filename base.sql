@@ -900,3 +900,250 @@ END;
 
 $$ language 'plpgsql';
   
+  
+  
+  
+CREATE OR REPLACE FUNCTION creer_tournoi(p_nom varchar, p_lieu varchar, p_date date, p_capacite int) RETURNS void
+AS $$
+
+  DECLARE
+    diff_days integer;
+    diff_months integer;
+    diff_years integer;
+
+  BEGIN
+    -- La date doit être dans le futur
+    SELECT EXTRACT(DAY FROM age(p_date, NOW())) INTO diff_days;
+    SELECT EXTRACT(MONTH FROM age(p_date, NOW())) INTO diff_months;
+    SELECT EXTRACT(YEAR FROM age(p_date, NOW())) INTO diff_years;
+
+    -- La date est passé
+    IF diff_days < 0 OR diff_months < 0 OR diff_years < 0 THEN
+      RAISE EXCEPTION 'La date est passé, veuillez fournir une date in the future';
+    END IF;
+
+    -- La capacité doit être de 4 || 8 || 16
+    IF p_capacite != 4 AND p_capacite != 8 AND p_capacite != 16 THEN
+      RAISE EXCEPTION 'La capacité doit être de 4 ou 8 ou 16 (regarde la doc !!).';
+    END IF;
+
+    INSERT INTO tournoi(nom, lieu, date, capacite) VALUES (
+      p_nom, p_lieu, p_date, p_capacite
+    );
+  END;
+  
+  
+  
+  /**
+ * Si l'utilisateur a plusieurs fois le même pokémon (avec le même nom)
+ * je demande l'identifiant du pokémon (dresseur_pokémon)
+ * -> je mets un paramètre optionnel pour l'id, si pas id je prend que le nom SI id je prend nom + id
+ * si que nom et plusieurs pokémon -> EXCEPTION !
+ */
+
+CREATE OR REPLACE FUNCTION inscription_tournoi(p_pseudo varchar, p_nom_tournoi varchar, p_lieu_tournoi varchar, p_date_tournoi date, p_nom_pokemon varchar, p_id_pokemon integer DEFAULT 0)
+RETURNS void
+AS $$
+
+  DECLARE
+    v_dresseur dresseur%ROWTYPE;
+    v_dresseur_id dresseur.id%TYPE;
+    v_dresseur_pokemon_id dresseur_pokemon.pokemon_id%TYPE;
+    v_tournoi_id tournoi.id%TYPE;
+    v_pokemon_id pokemon.id%TYPE;
+
+    -- Cb de pokémons portant le même nom le dresseur a-t-il ???
+    v_dresseur_same_pokemon_name integer;
+  BEGIN
+    -- ingore casse
+    p_pseudo := lower(p_pseudo);
+    p_nom_pokemon := lower(p_nom_pokemon);
+    p_lieu_tournoi := lower(p_lieu_tournoi);
+    p_nom_tournoi := lower(p_nom_tournoi);
+
+    -- récup du tournoi
+    SELECT id INTO v_tournoi_id
+      FROM tournoi
+      WHERE lower(lieu) = p_lieu_tournoi
+      AND lower(nom) = p_nom_tournoi
+      AND date = p_date_tournoi
+    ;
+
+    IF v_tournoi_id IS NULL THEN
+      RAISE EXCEPTION 'tournoi name % in % for % not found', p_nom_tournoi, p_lieu_tournoi, p_date_tournoi;
+    END IF;
+
+    -- on ne se base que sur le nom
+    -- on fait donc qq vérifs
+    IF p_id_pokemon = 0 THEN
+
+      -- récup du dresseur et de ses pokémons
+      SELECT dresseur_id, pokemon_id  INTO v_dresseur_id, v_dresseur_pokemon_id
+        FROM dresseur_pokemon_info
+        WHERE lower(pseudo) = p_pseudo
+        AND lower(pokemon_nom) = p_nom_pokemon
+      ;
+      -- GET DIAGNOSTICS v_dresseur_same_pokemon_name = ROW_COUNT;
+
+      -- J'ai bloqué sur du SQL basique, je n'avais plus le temps -> je fais deux requêtes
+      -- J'ai pas comprit pourquoi le get diagnostics ne fonctionne pas *rage*.
+      SELECT COUNT(*) INTO v_dresseur_same_pokemon_name
+        FROM dresseur_pokemon_info
+        WHERE lower(pseudo) = 'america'
+        AND lower(pokemon_nom) = 'pikachu'
+      ;
+
+      RAISE NOTICE '% selected dresseur', v_dresseur_same_pokemon_name;
+
+      IF v_dresseur_id IS NULL THEN
+        RAISE EXCEPTION 'user % with pokemon % not found', p_pseudo, p_nom_pokemon;
+      END IF;
+
+      IF v_dresseur_same_pokemon_name > 1 THEN
+        RAISE EXCEPTION 'The user % (%) has multiple %, please enter the id of the pokemon which will plays', p_pseudo, v_dresseur_id, p_nom_pokemon;
+      END IF;
+
+    -- on se base sur l'id du pokémon (de dresseur_pokemon)
+    ELSE
+      SELECT dresseur_id, pokemon_id  INTO v_dresseur_id, v_dresseur_pokemon_id
+        FROM dresseur_pokemon_info
+        WHERE lower(pseudo) = p_pseudo
+        AND pokemon_id = p_id_pokemon
+      ;
+
+      IF v_dresseur_id IS NULL THEN
+        RAISE EXCEPTION 'user % with pokemon name % and id % not found', p_pseudo, p_nom_pokemon, p_id_pokemon;
+      END IF;
+
+    END IF;
+
+    -- Vérifications done, let's go !
+    INSERT INTO participant
+      (dresseur_id, tournoi_id, dresseur_pokemon_id)
+      VALUES (
+        v_dresseur_id,
+        v_tournoi_id,
+        v_dresseur_pokemon_id
+      );
+
+    RAISE NOTICE 'The user % (%) has been registered for the tournoi % in % at % with the pokemon id %', p_pseudo, v_dresseur_id, p_nom_tournoi, p_lieu_tournoi, p_date_tournoi, v_dresseur_pokemon_id;
+
+  END;
+$$ language 'plpgsql';
+
+
+
+
+/**
+ * Lorsqu'on modifie l'attribut "debut" (de 0 vers 1) sur la table tournoi, j'exécute cette fonction.
+ */
+CREATE OR REPLACE FUNCTION deroulement_tournoi()
+RETURNS trigger
+
+AS $$
+
+  DECLARE
+    -- Le nombre de points maximum (qu'un joueur a)
+    v_max_pts integer;
+    
+    -- Le nombre de joueurs qui ont le maximum de points
+    v_players_max_pts integer;
+
+    -- Le nombre de "rounds", le nombre de déroulement du tournoi
+    nb_round integer;
+
+    -- Le pokemon qui gagne un combat
+    v_pokemon_id_gg integer;
+
+    -- l'id du tournoi en cours
+    tournoi_id tournoi.id%TYPE;
+
+    -- Ils vont s'affronterrrrrrr
+    row_participant1 participant%ROWTYPE;
+    row_participant2 participant%ROWTYPE;
+
+    c_selectParticipant CURSOR(nb_round integer) FOR
+      SELECT *
+          FROM participant
+          INNER JOIN tournoi
+            ON participant.tournoi_id = tournoi.id
+          WHERE participant.points = nb_round * 5
+          AND tournoi.id = NEW.id;
+          -- 5 = le nb de points gagnés lors d'un combat
+
+  BEGIN
+    nb_round := 0;
+    tournoi_id := NEW.id;
+
+    LOOP
+      -- Je sélectionne le joueur ayant le max de points
+      SELECT MAX(participant.points) INTO v_max_pts
+        FROM participant
+        INNER JOIN tournoi
+          ON participant.tournoi_id = tournoi.id
+        WHERE tournoi.id = NEW.id;
+
+      -- Je compte combien de joueurs ont le nombre de points maximum
+      -- S'il n'y en a qu'un, c'est celui qui gagne.
+      SELECT COUNT(participant.id) INTO v_players_max_pts
+        FROM participant
+        INNER JOIN tournoi
+        ON participant.tournoi_id = tournoi.id
+        WHERE participant.points = v_max_pts;
+
+      -- On a le gagnant, on arrête le déroulement du tournoi
+      IF v_players_max_pts == 1 THEN
+        EXIT;
+      END IF;
+
+      -- Do that with cursor and fetch !!
+      OPEN c_selectParticipant(nb_round);
+      LOOP
+
+        FETCH c_selectParticipant INTO row_participant1;
+        -- EXIT WHEN NOT FOUND;
+
+        FETCH c_selectParticipant INTO row_participant2;
+        EXIT WHEN NOT FOUND;
+
+        -- récupérer le gagnant et lui attribuer les points
+        SELECT combat(row_participant1.dresseur_pokemon_id, row_participant2.dresseur_pokemon_id) INTO v_pokemon_id_gg;
+
+        UPDATE participant
+          SET points = points + 5
+          WHERE dresseur_pokemon_id = v_pokemon_id_gg
+          AND tournoi_id = tournoi_id;
+
+      END LOOP;
+
+      nb_round := nb_round +1;
+
+      IF nb_round > 50 THEN
+        RAISE EXCEPTION 'ENDLESS LOOP';
+      END IF;
+
+    END LOOP;
+
+  END;
+
+$$ language 'plpgsql';
+
+
+
+/**
+ * Lorsque l'attribut "en_cours" de la table tournoi passe à 1 -> on trigger le deroulement_tournoi
+ *
+ * Source: http://www.the-art-of-web.com/sql/trigger-update-timestamp/
+ * and https://stackoverflow.com/questions/25435669/fire-trigger-on-update-of-columna-or-columnb-or-columnc
+ */
+
+CREATE TRIGGER deroulement_tournoi_trigger
+AFTER UPDATE ON tournoi
+FOR EACH ROW
+WHEN (NEW.en_cours = 1)
+EXECUTE PROCEDURE deroulement_tournoi();
+  
+  
+  
+
+$$ language 'plpgsql';
