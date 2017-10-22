@@ -64,7 +64,7 @@ BEGIN
   -- Début du combat !!! 
   WHILE tour != 51 AND v_vie1 > 0 AND v_vie2 > 0 LOOP
 
-    perform pg_sleep(2);
+    -- perform pg_sleep(2);
 
     -- Vérifie le pokémon attaquant en premier et effectue son attaque
     IF vdresseur_pok1.vitesse >= vdresseur_pok2.vitesse THEN
