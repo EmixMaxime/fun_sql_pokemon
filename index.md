@@ -22,15 +22,9 @@ Les tables :
 
 - Ajouter la fonction `insert_auto_efficacite_when_new_type` et son trigger.
 
-- Exécuter le fichier `data-type.sql` qui insère les différents types.
-
 - Ajouter la fonction `maj_efficacite`.
 
-- Éxécuter le fichier `data-efficacite.sql` afin de modifier les efficacités.
-
 - Ajouter la fonction `maj_evolution`.
-
-- Exécuter le fichier `data-pokemon.sql` afin d'ajouter les pokémons.
 
 - Ajouter la fonction `combat`.
 
@@ -42,7 +36,19 @@ Les tables :
 
 - Ajouter la fonction `ajout_dresseur_pokemon`.
 
-- 
+- Ajouter la fonction `creer_tournoi`.
+
+- Ajouter la fonction `inscription_tournoi`.
+
+- Ajouter la fonction `deroulement_tournoi` et son trigger.
+
+- Ajouter la fonction `demarrer_tournoi`.
+
+- Exécuter le fichier `data.sql`.
+
+- Éxécuter le fichier `data-efficacite.sql` afin de modifier les efficacités.
+
+- Exécuter le fichier `data-pokemon.sql` afin d'ajouter les pokémons.
 
 ## Description des fonctions
 - Fonction `type_id_to_uppercase()` va mettre les `id` des `type`s enregistrés en majuscule.
