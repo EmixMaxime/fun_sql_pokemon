@@ -1049,11 +1049,11 @@ AS $$
     -- Le nombre de "rounds", le nombre de déroulement du tournoi
     nb_round integer;
 
+    -- Détermine si c'est la finale
+    final integer;
+
     -- Le pokemon qui gagne un combat
     v_pokemon_id_gg integer;
-
-    -- l'id du tournoi en cours
-    tournoi_id tournoi.id%TYPE;
 
     -- Ils vont s'affronterrrrrrr
     row_participant1 participant%ROWTYPE;
@@ -1069,8 +1069,10 @@ AS $$
           -- 5 = le nb de points gagnés lors d'un combat
 
   BEGIN
+    final := 0;
     nb_round := 0;
-    tournoi_id := NEW.id;
+
+    OPEN c_selectParticipant(nb_round);
 
     LOOP
       -- Je sélectionne le joueur ayant le max de points
@@ -1079,42 +1081,45 @@ AS $$
         INNER JOIN tournoi
           ON participant.tournoi_id = tournoi.id
         WHERE tournoi.id = NEW.id;
-
+      
+      
       RAISE NOTICE '% v_max_pts = ', v_max_pts;
 
-      -- Je compte combien de joueurs ont le nombre de points maximum
-      -- S'il n'y en a qu'un, c'est celui qui gagne.
-      SELECT COUNT(*) INTO v_players_max_pts
-        FROM participant
-        INNER JOIN tournoi
-        ON participant.tournoi_id = tournoi.id
-        WHERE participant.points = v_max_pts
-        AND tournoi.id = NEW.id;
+      IF nb_round % 2 = 0 THEN
+        RAISE NOTICE 'nb_round = % cursor refreshed.', nb_round;
+        CLOSE c_selectParticipant;
+        OPEN c_selectParticipant(nb_round);
 
-      -- On a le gagnant, on arrête le déroulement du tournoi
-      IF v_players_max_pts = 1 THEN
-        EXIT;
+        -- Je compte combien de joueurs ont le nombre de points maximum
+        -- S'il n'y en a qu'un, c'est celui qui gagne.
+        SELECT COUNT(*) INTO v_players_max_pts
+          FROM participant
+          INNER JOIN tournoi
+          ON participant.tournoi_id = tournoi.id
+          WHERE participant.points = v_max_pts
+          AND tournoi.id = NEW.id;
+
+        -- On a le gagnant, on arrête le déroulement du tournoi
+        IF v_players_max_pts = 1 THEN
+          EXIT;
+        END IF;
       END IF;
 
-      -- Do that with cursor and fetch !!
-      OPEN c_selectParticipant(nb_round);
-      LOOP
 
-        FETCH c_selectParticipant INTO row_participant1;
-        -- EXIT WHEN NOT FOUND;
+      -- récupération des participants qui vont combattre l'un contre l'autre.
+      FETCH c_selectParticipant INTO row_participant1;
+      FETCH c_selectParticipant INTO row_participant2;
 
-        FETCH c_selectParticipant INTO row_participant2;
-        EXIT WHEN NOT FOUND;
+      -- pour fixer l'histoire du curseur qui ne VEUT PAS SE REDÉFINIR !!!!!!!!!!!!
+      EXIT WHEN NOT FOUND;
 
-        -- récupérer le gagnant et lui attribuer les points
-        SELECT combat(row_participant1.dresseur_pokemon_id, row_participant2.dresseur_pokemon_id) INTO v_pokemon_id_gg;
+      -- récupérer le gagnant et lui attribuer les points
+      SELECT combat(row_participant1.dresseur_pokemon_id, row_participant2.dresseur_pokemon_id) INTO v_pokemon_id_gg;
 
-        UPDATE participant
-          SET points = points + 5
-          WHERE dresseur_pokemon_id = v_pokemon_id_gg
-          AND tournoi_id = tournoi_id;
-
-      END LOOP;
+      UPDATE participant
+        SET points = points + 5
+        WHERE dresseur_pokemon_id = v_pokemon_id_gg
+        AND tournoi_id = NEW.id;
 
       nb_round := nb_round +1;
 
@@ -1123,6 +1128,10 @@ AS $$
       END IF;
 
     END LOOP;
+
+    -- CLOSE c_selectParticipant;
+    
+    RETURN NEW;
 
   END;
 
@@ -1146,3 +1155,15 @@ EXECUTE PROCEDURE deroulement_tournoi();
   
 
 $$ language 'plpgsql';
+
+
+-- tournoi
+select creer_tournoi('test', 'Calais', '2017-11-25', 4);
+
+select inscription_tournoi('Passpacou','test','calais','25/11/2017','Chenipan');
+select inscription_tournoi('Triggered','test','calais','25/11/2017','Goupix');
+select inscription_tournoi('Assembleur is bae','test','calais','25/11/2017','Pikachu');
+
+select demarrer_tournoi('test', 'calais');
+
+update participant set points = 0;
