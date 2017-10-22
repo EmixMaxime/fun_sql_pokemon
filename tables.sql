@@ -60,7 +60,8 @@ CREATE TABLE tournoi(
   date date NOT NULL,
   en_cours int DEFAULT 0,
   termine int DEFAULT 0,
-  UNIQUE(nom, lieu)
+  -- un tournoi peut être mensuel dans différentes villes.
+  UNIQUE(nom, lieu, date)
 );
 
 CREATE TABLE participant(
