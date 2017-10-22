@@ -28,6 +28,28 @@ Les tables :
 
 - Exécuter le fichier `data-pokemon.sql` afin d'ajouter les pokémons.
 
+## Description des fonctions
+- Fonction `type_id_to_uppercase()` va mettre les `id` des `type`s enregistrés en majuscule.
+
+- Fonction et Trigger `insert_efficacite_when_new_type()` vont remplir la table `efficacite` de toutes les combinaisons de `type` possible et mettre leur `taux` à 1.
+
+- Fonction `maj_efficacite (p_type_nom1 varchar, p_type_nom2 varchar, p_eff float)` va permettre de fixer le `taux` désigné par `p_eff` lorsqu'un `type.id`, désigner par `p_type_nom1`, se bat contre un autre `type.id` désigné par `p_type_nom2`.
+
+- Fonction `maj_evolution(p_pokemon_base int, p_pokemon_evolution int)` permet de d'assigner à un pokémon `p_pokemon_base`, une évolution `p_pokemon_evolution`.
+
+- Fonction `ajout_dresseur_pokemon
+  (p_pseudo varchar, p_pokemon_nom varchar, p_attaque int, p_vie int, p_defense int, p_vitesse int)` ajoute un `dresseur_pokemon` en spécifiant le pseudo du dresseur et les paramètres du pokémon.
+
+- Fonction `combat(p_dresseur_pok1 int, p_dresseur_pok2 int)` va permettre le combat de deux pokémon, il faut insérer les `id` de `dresseur_pokemon` correspondants. Elle retourne l'un de ces `id`.
+
+- Fonction `affichage_combat(numero int, eff float, vie int)` renvoie un affichage lors du combat.
+
+- Fonction et Trigger `evolution()` vérifie si les `points_evolution` d'un `dresseur_pokemon` sont suffisant et le fait évoluer si possible.
+
+- Fonction `dresseur_pokemon_evolution(dresseur_pok_id integer)` ajoute un `points_evolution` au pokemon gagnant.
+
+
+
 
 ## Ajout d'un pokémon à un dresseur
 
@@ -56,9 +78,14 @@ Exemple : SELECT combat(1,2);
 
 ## Normalisation
 - Première forme normale : Chaque attribut est unique et créer une dépendance entre les tables grâce aux clés étrangères qui établissent les relations entre les tables.
+
 - Deuxième forme normale : Chaque attibut non clés de la table est dépendant d'un attribut clés.
+
 - Troisième forme normale : Les attributs non clés sont uniquement dépendants d'une ou plusieurs clés, et ne sont pas dépendants d'autres attributs non clés.
-- Forme normale de Boyce-Codd : 
+
+- Cette base ne respecte pas la Forme normale de Boyce-Codd car :
+  dresseur.id -> pseudo;
+  pseudo      -> dresseur.id;
 
 ## Problèmes rencontrés
 Lors du développement de la fonction combat afin de renseigner les variables des Pokémon, nous utilisions un Curseur, de ce fait l'ordre des paramètres était cruciale pour avoir les bon résultats. Les Fetch prenaient les paramètres toujours dans le même ordre. Nous avons résolu ça, via l'utilisation de requêtes.
