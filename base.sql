@@ -934,8 +934,7 @@ AS $$
   END;
   
   
-  
-  /**
+/**
  * Si l'utilisateur a plusieurs fois le même pokémon (avec le même nom)
  * je demande l'identifiant du pokémon (dresseur_pokémon)
  * -> je mets un paramètre optionnel pour l'id, si pas id je prend que le nom SI id je prend nom + id
@@ -979,7 +978,7 @@ AS $$
     IF p_id_pokemon = 0 THEN
 
       -- récup du dresseur et de ses pokémons
-      SELECT dresseur_id, pokemon_id  INTO v_dresseur_id, v_dresseur_pokemon_id
+      SELECT dresseur_id, dresseur_pokemon_id INTO v_dresseur_id, v_dresseur_pokemon_id
         FROM dresseur_pokemon_info
         WHERE lower(pseudo) = p_pseudo
         AND lower(pokemon_nom) = p_nom_pokemon
@@ -996,7 +995,7 @@ AS $$
 
       RAISE NOTICE '% selected dresseur', v_dresseur_same_pokemon_name;
 
-      IF v_dresseur_id IS NULL THEN
+      IF v_dresseur_id = 0 THEN
         RAISE EXCEPTION 'user % with pokemon % not found', p_pseudo, p_nom_pokemon;
       END IF;
 
@@ -1006,7 +1005,7 @@ AS $$
 
     -- on se base sur l'id du pokémon (de dresseur_pokemon)
     ELSE
-      SELECT dresseur_id, pokemon_id  INTO v_dresseur_id, v_dresseur_pokemon_id
+      SELECT dresseur_id, dresseur_pokemon_id  INTO v_dresseur_id, v_dresseur_pokemon_id
         FROM dresseur_pokemon_info
         WHERE lower(pseudo) = p_pseudo
         AND pokemon_id = p_id_pokemon
@@ -1031,9 +1030,6 @@ AS $$
 
   END;
 $$ language 'plpgsql';
-
-
-
 
 /**
  * Lorsqu'on modifie l'attribut "debut" (de 0 vers 1) sur la table tournoi, j'exécute cette fonction.
@@ -1084,16 +1080,19 @@ AS $$
           ON participant.tournoi_id = tournoi.id
         WHERE tournoi.id = NEW.id;
 
+      RAISE NOTICE '% v_max_pts = ', v_max_pts;
+
       -- Je compte combien de joueurs ont le nombre de points maximum
       -- S'il n'y en a qu'un, c'est celui qui gagne.
-      SELECT COUNT(participant.id) INTO v_players_max_pts
+      SELECT COUNT(*) INTO v_players_max_pts
         FROM participant
         INNER JOIN tournoi
         ON participant.tournoi_id = tournoi.id
-        WHERE participant.points = v_max_pts;
+        WHERE participant.points = v_max_pts
+        AND tournoi.id = NEW.id;
 
       -- On a le gagnant, on arrête le déroulement du tournoi
-      IF v_players_max_pts == 1 THEN
+      IF v_players_max_pts = 1 THEN
         EXIT;
       END IF;
 
@@ -1128,7 +1127,6 @@ AS $$
   END;
 
 $$ language 'plpgsql';
-
 
 
 /**

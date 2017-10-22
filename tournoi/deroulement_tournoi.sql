@@ -47,16 +47,19 @@ AS $$
           ON participant.tournoi_id = tournoi.id
         WHERE tournoi.id = NEW.id;
 
+      RAISE NOTICE '% v_max_pts = ', v_max_pts;
+
       -- Je compte combien de joueurs ont le nombre de points maximum
       -- S'il n'y en a qu'un, c'est celui qui gagne.
-      SELECT COUNT(participant.id) INTO v_players_max_pts
+      SELECT COUNT(*) INTO v_players_max_pts
         FROM participant
         INNER JOIN tournoi
         ON participant.tournoi_id = tournoi.id
-        WHERE participant.points = v_max_pts;
+        WHERE participant.points = v_max_pts
+        AND tournoi.id = NEW.id;
 
       -- On a le gagnant, on arrête le déroulement du tournoi
-      IF v_players_max_pts == 1 THEN
+      IF v_players_max_pts = 1 THEN
         EXIT;
       END IF;
 
