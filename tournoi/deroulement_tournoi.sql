@@ -16,6 +16,9 @@ AS $$
     -- Le nombre de "rounds", le nombre de déroulement du tournoi
     nb_round integer;
 
+    -- Détermine si c'est la finale
+    final integer;
+
     -- Le pokemon qui gagne un combat
     v_pokemon_id_gg integer;
 
@@ -33,6 +36,7 @@ AS $$
           -- 5 = le nb de points gagnés lors d'un combat
 
   BEGIN
+    final := 0;
     nb_round := 0;
 
     OPEN c_selectParticipant(nb_round);
@@ -44,7 +48,8 @@ AS $$
         INNER JOIN tournoi
           ON participant.tournoi_id = tournoi.id
         WHERE tournoi.id = NEW.id;
-
+      
+      
       RAISE NOTICE '% v_max_pts = ', v_max_pts;
 
       IF nb_round % 2 = 0 THEN
