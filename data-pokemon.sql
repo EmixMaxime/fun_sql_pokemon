@@ -22,6 +22,7 @@ INSERT INTO pokemon (nom,type_id_1) VALUES
 ('Roucoups','VOL'),
 ('Roucarnage','VOL'),
 ('Ratata','NOR'),
+('Ratatac','NOR'),
 ('Piafebec','VOL'),
 ('Rapasdepic','VOL'),
 ('Abo','POI'),
