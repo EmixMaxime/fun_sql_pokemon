@@ -14,6 +14,9 @@ Les tables :
 
 
 ## Insertion des données
+
+# Pour une création rapide, éxecuter le fichier `base.sql`
+
 - Ajouter la fonction et son trigger présent dans le fichier `type_id_to_uppercase_func_trig.sql` qui permet de mettre en majuscule les identifiants des `type`s.
 
 - Ajouter la fonction `insert_auto_efficacite` et son trigger. Rôle : remplir la table efficacité lorsqu'un nouveau type est ajouté. Le taux d'efficacité contre tous les types est fixé à 1 par défaut.
@@ -66,7 +69,7 @@ Cette fonction créé un tournoi. Ce tournoi n'est pas démarré, il faudra atte
 **Un tournoi peut avoir le même nom dans différents lieux.**. *Clef unique composée sur `nom` et `lieu`*.
 
 ## Déroulement d'un combat
-- Ajouter la fonction combat `combat`. Rôle : permettre à deux de pokémon de combattre ceux-ci vont s'infliger des dégâts en prenant en compte leur `vitesse` (ordre d'attaque), l'`attaque`, la `défense`, et le `taux` d'`efficacite` par rapport à leurs types respectifs afin de réduire la `vie` de l'autre pokémon à 0. Le pokémon gagnant recevra 1 `points_evolution`.
+- Ajouter la fonction combat `combat`. Rôle : permettre à deux de pokémon de combattre ceux-ci vont s'infliger des dégâts en prenant en compte leur `vitesse` (ordre d'attaque), l'`attaque`, la `défense`, et le `taux` d'`efficacite` par rapport à leurs types respectifs afin de réduire la `vie` de l'autre pokémon à 0. Le pokémon gagnant recevra 1 `points_evolution`. L'affichage des messages a été ralenti pour plus de compréhension.
 
 - L'affichage est effectué par la fonction `affichage_combat`.
 
