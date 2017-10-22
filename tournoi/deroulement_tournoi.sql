@@ -23,18 +23,19 @@ AS $$
     row_participant1 participant%ROWTYPE;
     row_participant2 participant%ROWTYPE;
 
-    c_selectParticipant refcursor;
+    c_selectParticipant CURSOR(nb_round integer) FOR
+      SELECT *
+          FROM participant
+          INNER JOIN tournoi
+            ON participant.tournoi_id = tournoi.id
+          WHERE participant.points = nb_round * 5
+          AND tournoi.id = NEW.id;
+          -- 5 = le nb de points gagnés lors d'un combat
 
   BEGIN
     nb_round := 0;
 
-    OPEN c_selectParticipant FOR
-      SELECT *
-      FROM participant
-      INNER JOIN tournoi
-        ON participant.tournoi_id = tournoi.id
-      WHERE participant.points = nb_round * 5
-      AND tournoi.id = NEW.id;
+    OPEN c_selectParticipant(nb_round);
 
     LOOP
       -- Je sélectionne le joueur ayant le max de points
@@ -49,13 +50,7 @@ AS $$
       IF nb_round % 2 = 0 THEN
         RAISE NOTICE 'nb_round = % cursor refreshed.', nb_round;
         CLOSE c_selectParticipant;
-        OPEN c_selectParticipant FOR
-          SELECT *
-          FROM participant
-          INNER JOIN tournoi
-            ON participant.tournoi_id = tournoi.id
-          WHERE participant.points = nb_round * 5
-          AND tournoi.id = NEW.id;
+        OPEN c_selectParticipant(nb_round);
 
         -- Je compte combien de joueurs ont le nombre de points maximum
         -- S'il n'y en a qu'un, c'est celui qui gagne.
@@ -76,6 +71,8 @@ AS $$
       -- récupération des participants qui vont combattre l'un contre l'autre.
       FETCH c_selectParticipant INTO row_participant1;
       FETCH c_selectParticipant INTO row_participant2;
+
+      -- pour fixer l'histoire du curseur qui ne VEUT PAS SE REDÉFINIR !!!!!!!!!!!!
       EXIT WHEN NOT FOUND;
 
       -- récupérer le gagnant et lui attribuer les points
