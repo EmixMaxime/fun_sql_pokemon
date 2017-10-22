@@ -33,7 +33,7 @@ Les tables :
 
 ## Tournoi
 | Function                                                                         | Return Type | Example                                                           |
-| -------------------------------------------------------------------------------- |:-----------:| -----------------------------------------------------------------:|
+|----------------------------------------------------------------------------------|-------------|-------------------------------------------------------------------|
 | `creer_tournoi(nom varchar, lieu varchar, date date, capacite int)`              | `void`      | `SELECT creer_tournoi('Super power', 'Calais', '15/10/2017', 4);` |
 | `demarrer_tournoi(nom varchar, lieu varchar)`                                    | `void`      | `SELECT demarrer_tournoi('Super power', 'Calais');`               |
 
