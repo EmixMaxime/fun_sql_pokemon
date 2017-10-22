@@ -32,10 +32,10 @@ Les tables :
 ## Ajout d'un pokémon à un dresseur
 
 ## Tournoi
-| Function                                                                         | Return Type | Example  |
-| -------------------------------------------------------------------------------- |:-----------:| -----:|
-| `creer_tournoi(nom varchar, lieu varchar, date date, capacite int)`      | `void`      | `SELECT creer_tournoi('Super power', 'Calais', '15/10/2017', 4);` |
-| `demarrer_tournoi(nom varchar, lieu varchar)` | `void` | `SELECT demarrer_tournoi('Super power', 'Calais');` |
+| Function                                                                         | Return Type | Example                                                           |
+| -------------------------------------------------------------------------------- |:-----------:| -----------------------------------------------------------------:|
+| `creer_tournoi(nom varchar, lieu varchar, date date, capacite int)`              | `void`      | `SELECT creer_tournoi('Super power', 'Calais', '15/10/2017', 4);` |
+| `demarrer_tournoi(nom varchar, lieu varchar)`                                    | `void`      | `SELECT demarrer_tournoi('Super power', 'Calais');`               |
 
 
 Cette fonction créé un tournoi. Ce tournoi n'est pas démarré, il faudra attendre le jour d'ouverture pour pouvoir l'ouvrir grâce à la fonction `demarrer_tournoi`.
