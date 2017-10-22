@@ -79,7 +79,13 @@ Les tables :
 Cette fonction créé un tournoi. Ce tournoi n'est pas démarré, il faudra attendre le jour d'ouverture pour pouvoir l'ouvrir grâce à la fonction `demarrer_tournoi`.
 
 
-**Un tournoi peut avoir le même nom dans différents lieux.**. *Clef unique composée sur `nom` et `lieu`*.
+**Un tournoi peut avoir le même nom dans différents lieux pour des dates différentes.**. *Clef unique composée sur `nom` `lieu` et `date`*.
+
+### Fonctionnement
+Les tournois ne peuvent se faire que par `4 || 8 || 16`, soit un nombre pair. Prenons l'exemple d'un tournois de 4. Le joueur 1 va affronter le 2 ainsi que le 3 contre le 4. À l'issue de se roulement, 2 joueurs auront gagné, se veront donc attribuer `5` points. Le "round" passe à 1 (le deuxième roulement), je sélectionne les joueurs ayant `round *5`, soit mes deux joueurs. Je les fais s'affronter sur le même principe.
+
+
+À chaque roulement je sélectionne les joueurs ayant le maximum de points. S'il n'y a qu'un joueur, c'est notre grand gagnant !
 
 ## Déroulement d'un combat
 - Ajouter la fonction combat `combat`. Rôle : permettre à deux de pokémon de combattre ceux-ci vont s'infliger des dégâts en prenant en compte leur `vitesse` (ordre d'attaque), l'`attaque`, la `défense`, et le `taux` d'`efficacite` par rapport à leurs types respectifs afin de réduire la `vie` de l'autre pokémon à 0. Le pokémon gagnant recevra 1 `points_evolution`. L'affichage des messages a été ralenti pour plus de compréhension.
@@ -87,7 +93,10 @@ Cette fonction créé un tournoi. Ce tournoi n'est pas démarré, il faudra atte
 - L'affichage est effectué par la fonction `affichage_combat`.
 
 - La fonction combat prendre pour paramètre les deux `id` de la table `dresseur_pokemon` des pokémon qui vont combattre.
-Exemple : SELECT combat(1,2);
+Exemple : 
+```sql
+SELECT combat(1,2);
+```
 
 ## Les vues
 - `dresseur_pokemon_info` qui nous donne le `nom`, `pseudo` `nom` et `id` du dresseur avec l'`id` et le `nom` de son pokémon.
