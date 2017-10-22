@@ -52,5 +52,11 @@ Exemple : SELECT combat(1,2);
 ## Les vues
 - `dresseur_pokemon_info` qui nous donne le `nom`, `pseudo` `nom` et `id` du dresseur avec l'`id` et le `nom` de son pokémon.
 
+## Normalisation
+- Première forme normale : Chaque attribut est unique et créer une dépendance entre les tables grâce aux clés étrangères qui établissent les relations entre les tables.
+- Deuxième forme normale : Chaque attibut non clés de la table est dépendant d'un attribut clés.
+- Troisième forme normale : Les attributs non clés sont uniquement dépendants d'une ou plusieurs clés, et ne sont pas dépendants d'autres attributs non clés.
+- Forme normale de Boyce-Codd : 
+
 ## Problèmes rencontrés
 Lors du développement de la fonction combat afin de renseigner les variables des Pokémon, nous utilisions un Curseur, de ce fait l'ordre des paramètres était cruciale pour avoir les bon résultats. Les Fetch prenaient les paramètres toujours dans le même ordre. Nous avons résolu ça, via l'utilisation de requêtes.
