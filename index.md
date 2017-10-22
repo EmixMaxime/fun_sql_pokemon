@@ -49,6 +49,8 @@ Cette fonction créé un tournoi. Ce tournoi n'est pas démarré, il faudra atte
 - La fonction combat prendre pour paramètre les deux `id` de la table `dresseur_pokemon` des pokémon qui vont combattre.
 Exemple : SELECT combat(1,2);
 
+## Les vues
+- `dresseur_pokemon_info` qui nous donne le `nom`, `pseudo` `nom` et `id` du dresseur avec l'`id` et le `nom` de son pokémon.
 
 ## Problèmes rencontrés
 Lors du développement de la fonction combat afin de renseigner les variables des Pokémon, nous utilisions un Curseur, de ce fait l'ordre des paramètres était cruciale pour avoir les bon résultats. Les Fetch prenaient les paramètres toujours dans le même ordre. Nous avons résolu ça, via l'utilisation de requêtes.
