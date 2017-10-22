@@ -47,9 +47,24 @@ INSERT INTO dresseur (prenom, nom, pseudo) VALUES
   ('Severine', 'Letrez', 'Comptabilitey'),
   ('Bruno', 'Warin', 'James Dany Boonde'),
   ('Francois', 'Rousselle', 'Assembleur is bae'),
-  ('Dominique', 'Dussart', 'Triggered')
+  ('Dominique', 'Dussart', 'Triggered'),
+  ('Maxime', 'Moreau', 'mx')
 ;
 
 -- Insertion pokemons des dresseurs 
-INSERT INTO dresseur_pokemon(attaque,defense,vitesse,vie,pokemon_id,dresseur_id) values (20,20,50,150,1,1);
-INSERT INTO dresseur_pokemon (attaque,defense,vitesse,vie,pokemon_id,dresseur_id, points_evolution) values (500,100,100,170,1,2,4);
+INSERT INTO dresseur_pokemon(
+  attaque, defense, vitesse, vie, pokemon_id, dresseur_id
+  ) VALUES (
+    20, 20, 50, 150, 1, 1
+  );
+
+INSERT INTO dresseur_pokemon(
+  attaque, defense, vitesse, vie, pokemon_id, dresseur_id
+  ) VALUES (
+    40, 50, 90, 150, 1, 1
+  );
+
+INSERT INTO dresseur_pokemon(
+  attaque, defense, vitesse, vie, pokemon_id, dresseur_id, points_evolution
+  ) VALUES (
+    500, 100, 100, 170, 1, 2, 4);
