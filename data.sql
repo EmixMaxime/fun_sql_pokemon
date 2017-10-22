@@ -20,23 +20,6 @@ INSERT INTO type VALUES
   ('FEE','Fée')
 ;
 
--- Insertion pokemons
-INSERT INTO pokemon (nom, type_id_1) VALUES 
-  ('pikachu','ELE'),
-  ('raichu','ELE'),
-  ('salameche','FEU'),
-  ('reptincel','FEU'),
-  ('ratata','NOR'),
-  ('ratatac','NOR')
-;
-
-INSERT INTO pokemon (nom, type_id_1, type_id_2) VALUES
-  ('fantominus','SPE','POI'),
-  ('spectrum','SPE','POI'),
-  ('ectoplasma','SPE','POI'),
-  ('dracaufeu','FEU','VOL')
-;
-
 
 -- Insertion dresseurs
 INSERT INTO dresseur (prenom, nom, pseudo) VALUES
@@ -50,21 +33,3 @@ INSERT INTO dresseur (prenom, nom, pseudo) VALUES
   ('Dominique', 'Dussart', 'Triggered'),
   ('Maxime', 'Moreau', 'mx')
 ;
-
--- Insertion pokemons des dresseurs 
-INSERT INTO dresseur_pokemon(
-  attaque, defense, vitesse, vie, pokemon_id, dresseur_id
-  ) VALUES (
-    20, 20, 50, 150, 1, 1
-  );
-
-INSERT INTO dresseur_pokemon(
-  attaque, defense, vitesse, vie, pokemon_id, dresseur_id
-  ) VALUES (
-    40, 50, 90, 150, 1, 1
-  );
-
-INSERT INTO dresseur_pokemon(
-  attaque, defense, vitesse, vie, pokemon_id, dresseur_id, points_evolution
-  ) VALUES (
-    500, 100, 100, 170, 1, 2, 4);

@@ -29,4 +29,4 @@ AS $$
 
   END;
 
-$$ language 'plpgsql'
+$$ language 'plpgsql';
