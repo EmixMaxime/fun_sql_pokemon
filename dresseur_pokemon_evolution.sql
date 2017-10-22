@@ -6,7 +6,7 @@ DECLARE
   d integer; -- get diagnostic
 BEGIN
   UPDATE dresseur_pokemon
-    SET points_evolution = points_evolution +1
+    SET points_evolution = points_evolution + 1
     WHERE id = dresseur_pok_id
   ;
 
