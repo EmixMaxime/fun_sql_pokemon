@@ -493,6 +493,7 @@ INSERT INTO pokemon (nom,type_id_1) VALUES
 ('Roucoups','VOL'),
 ('Roucarnage','VOL'),
 ('Ratata','NOR'),
+('Ratatac','NOR'),
 ('Piafebec','VOL'),
 ('Rapasdepic','VOL'),
 ('Abo','POI'),
@@ -676,29 +677,13 @@ BEGIN
       v_vie2 := v_vie2 - degat_pok1_sur_pok2;
       
       -- Affichage stylé
-      RAISE NOTICE 'Le pokemon 1 attaque !';
-      IF efficacite_pok1_sur_pok2 > 1 THEN
-        RAISE NOTICE 'C est super efficace';
-      ELSE 
-        IF efficacite_pok1_sur_pok2 < 1 THEN
-          RAISE NOTICE 'Ce n est pas tres efficace';
-        END IF;
-      END IF;
-      RAISE NOTICE 'Il reste % PV au pokemon 2',v_vie2;
+      PERFORM  affichage_combat(1,efficacite_pok1_sur_pok2,v_vie2);
       
     ELSE 
       v_vie1 := v_vie1 - degat_pok2_sur_pok1;
       
       -- Affichage stylé
-      RAISE NOTICE 'Le pokemon 2 attaque !';
-      IF efficacite_pok2_sur_pok1 > 1 THEN
-        RAISE NOTICE 'C est super efficace';
-      ELSE 
-        IF efficacite_pok2_sur_pok1 < 1 THEN
-          RAISE NOTICE 'Ce n est pas tres efficace';
-        END IF;
-      END IF;
-      RAISE NOTICE 'Il reste % PV au pokemon 1',v_vie1;
+      PERFORM  affichage_combat(2,efficacite_pok2_sur_pok1,v_vie1);
       
     END IF;
 
@@ -708,30 +693,15 @@ BEGIN
       v_vie1 := v_vie1 - degat_pok2_sur_pok1;
       
       -- Affichage stylé
-      RAISE NOTICE 'Le pokemon 2 attaque !';
-      IF efficacite_pok2_sur_pok1 > 1 THEN
-        RAISE NOTICE 'C est super efficace';
-      ELSE 
-        IF efficacite_pok2_sur_pok1 < 1 THEN
-          RAISE NOTICE 'Ce n est pas tres efficace';
-        END IF;
-      END IF;
-      RAISE NOTICE 'Il reste % PV au pokemon 1',v_vie1;
+      PERFORM  affichage_combat(2,efficacite_pok2_sur_pok1,v_vie1);
       
     ELSE 
       IF vdresseur_pok2.vitesse > vdresseur_pok1.vitesse AND v_vie1 > 0 THEN
         v_vie2 := v_vie2 - degat_pok1_sur_pok2; 
         
           -- Affichage stylé
-        RAISE NOTICE 'Le pokemon 1 attaque !';
-        IF efficacite_pok1_sur_pok2 > 1 then
-          RAISE NOTICE 'C est super efficace';
-        ELSE 
-          IF efficacite_pok1_sur_pok2 < 1 then
-            RAISE NOTICE 'Ce n est pas tres efficace';
-          END IF;
-        END IF;
-        RAISE NOTICE 'Il reste % PV au pokemon 2',v_vie2;
+        PERFORM  affichage_combat(1,efficacite_pok1_sur_pok2,v_vie2);
+        
       END IF;
     END IF;
 
@@ -765,6 +735,7 @@ BEGIN
 
 END;
 $$ language 'plpgsql';
+
 
 
 CREATE OR REPLACE FUNCTION ajout_dresseur_pokemon
@@ -868,6 +839,13 @@ AS $$
 
 $$ language 'plpgsql';
 
+DROP TRIGGER IF EXISTS evolution ON dresseur_pokemon;
+
+CREATE TRIGGER evolution AFTER UPDATE
+	ON dresseur_pokemon
+	FOR EACH ROW EXECUTE PROCEDURE evolution();
+
+
 
 CREATE OR REPLACE VIEW dresseur_pokemon_info AS
   SELECT
@@ -880,3 +858,27 @@ CREATE OR REPLACE VIEW dresseur_pokemon_info AS
     ON d.id = dp.dresseur_id
   ORDER BY dresseur_id
 ;
+
+
+CREATE OR REPLACE FUNCTION dresseur_pokemon_evolution(dresseur_pok_id integer)
+RETURNS void
+AS $$
+
+DECLARE
+  d integer; -- get diagnostic
+BEGIN
+  UPDATE dresseur_pokemon
+    SET points_evolution = points_evolution +1
+    WHERE id = dresseur_pok_id
+  ;
+
+  GET DIAGNOSTICS d = ROW_COUNT;
+
+  -- Check if an update has been performed
+  IF d < 1 THEN
+    RAISE EXCEPTION 'dresseur_pokemon id = % not found', dresseur_pok_id;
+  END IF;
+
+END;
+$$ language 'plpgsql';
+
