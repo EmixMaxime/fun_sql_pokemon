@@ -3,7 +3,7 @@
 -- Insérer les pokemon dans la base de données
 
 INSERT INTO pokemon (nom,type_id_1) VALUES 
-('Bulbizarre','PLA');,
+('Bulbizarre','PLA'),
 ('Herbizarre','PLA'),
 ('Florizarre','PLA'),
 ('Salamèche','FEU'),
@@ -86,3 +86,46 @@ SELECT maj_evolution(44,45);
 SELECT maj_evolution(46,47);
 SELECT maj_evolution(48,49);
 SELECT maj_evolution(50,51);
+
+-- Insertion pokemons des dresseurs 
+INSERT INTO dresseur_pokemon(
+  attaque, defense, vitesse, vie, pokemon_id, dresseur_id
+  ) VALUES (
+    50, 50, 60, 150, 1, 1
+  );
+
+INSERT INTO dresseur_pokemon(
+  attaque, defense, vitesse, vie, pokemon_id, dresseur_id
+  ) VALUES (
+    40, 50, 90, 150, 4, 2
+  );
+
+INSERT INTO dresseur_pokemon(
+  attaque, defense, vitesse, vie, pokemon_id, dresseur_id
+  ) VALUES (
+    100, 10, 10, 170, 7, 3);
+    
+INSERT INTO dresseur_pokemon(
+  attaque, defense, vitesse, vie, pokemon_id, dresseur_id
+  ) VALUES (
+    60, 40, 15, 170, 10, 4);
+    
+INSERT INTO dresseur_pokemon(
+  attaque, defense, vitesse, vie, pokemon_id, dresseur_id
+  ) VALUES (
+    50, 60, 10, 170, 13, 5);
+    
+INSERT INTO dresseur_pokemon(
+  attaque, defense, vitesse, vie, pokemon_id, dresseur_id
+  ) VALUES (
+    50, 50, 100, 170, 17, 6);
+    
+INSERT INTO dresseur_pokemon(
+  attaque, defense, vitesse, vie, pokemon_id, dresseur_id
+  ) VALUES (
+    40, 90, 30, 170, 25, 7);
+    
+INSERT INTO dresseur_pokemon(
+  attaque, defense, vitesse, vie, pokemon_id, dresseur_id
+  ) VALUES (
+    80, 30, 100, 170, 37, 8);
