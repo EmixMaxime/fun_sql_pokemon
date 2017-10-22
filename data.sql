@@ -33,3 +33,14 @@ INSERT INTO dresseur (prenom, nom, pseudo) VALUES
   ('Dominique', 'Dussart', 'Triggered'),
   ('Maxime', 'Moreau', 'mx')
 ;
+
+-- tournoi
+select creer_tournoi('test', 'Calais', '2017-11-25', 4);
+
+select inscription_tournoi('Passpacou','test','calais','25/11/2017','Chenipan');
+select inscription_tournoi('Triggered','test','calais','25/11/2017','Goupix');
+select inscription_tournoi('Assembleur is bae','test','calais','25/11/2017','Pikachu');
+
+select demarrer_tournoi('test', 'calais');
+
+update participant set points = 0;
