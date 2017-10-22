@@ -42,7 +42,7 @@ AS $$
     IF p_id_pokemon = 0 THEN
 
       -- récup du dresseur et de ses pokémons
-      SELECT dresseur_id, pokemon_id  INTO v_dresseur_id, v_dresseur_pokemon_id
+      SELECT dresseur_id, dresseur_pokemon_id INTO v_dresseur_id, v_dresseur_pokemon_id
         FROM dresseur_pokemon_info
         WHERE lower(pseudo) = p_pseudo
         AND lower(pokemon_nom) = p_nom_pokemon
@@ -59,7 +59,7 @@ AS $$
 
       RAISE NOTICE '% selected dresseur', v_dresseur_same_pokemon_name;
 
-      IF v_dresseur_id IS NULL THEN
+      IF v_dresseur_id = 0 THEN
         RAISE EXCEPTION 'user % with pokemon % not found', p_pseudo, p_nom_pokemon;
       END IF;
 
@@ -69,7 +69,7 @@ AS $$
 
     -- on se base sur l'id du pokémon (de dresseur_pokemon)
     ELSE
-      SELECT dresseur_id, pokemon_id  INTO v_dresseur_id, v_dresseur_pokemon_id
+      SELECT dresseur_id, dresseur_pokemon_id  INTO v_dresseur_id, v_dresseur_pokemon_id
         FROM dresseur_pokemon_info
         WHERE lower(pseudo) = p_pseudo
         AND pokemon_id = p_id_pokemon
