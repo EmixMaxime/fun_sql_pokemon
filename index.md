@@ -15,11 +15,12 @@ Les tables :
 
 ## Insertion des données
 
-# Pour une création rapide, éxecuter le fichier `base.sql`
+### Pour une création rapide, éxecuter le fichier 'base.sql' et passer à l'étape suivante
+- Exécuter le fichier `tables.sql`.
 
 - Ajouter la fonction et son trigger présent dans le fichier `type_id_to_uppercase_func_trig.sql` qui permet de mettre en majuscule les identifiants des `type`s.
 
-- Ajouter la fonction `insert_auto_efficacite` et son trigger. Rôle : remplir la table efficacité lorsqu'un nouveau type est ajouté. Le taux d'efficacité contre tous les types est fixé à 1 par défaut.
+- Ajouter la fonction `insert_auto_efficacite_when_new_type` et son trigger.
 
 - Exécuter le fichier `data-type.sql` qui insère les différents types.
 
@@ -31,10 +32,22 @@ Les tables :
 
 - Exécuter le fichier `data-pokemon.sql` afin d'ajouter les pokémons.
 
+- Ajouter la fonction `combat`.
+
+- Ajouter la fonction `affichage_combat`
+
+- Ajouter la fonction `evolution` et son trigger.
+
+- Ajouter la fonction `dresseur_pokemon_evolution`.
+
+- Ajouter la fonction `ajout_dresseur_pokemon`.
+
+- 
+
 ## Description des fonctions
 - Fonction `type_id_to_uppercase()` va mettre les `id` des `type`s enregistrés en majuscule.
 
-- Fonction et Trigger `insert_efficacite_when_new_type()` vont remplir la table `efficacite` de toutes les combinaisons de `type` possible et mettre leur `taux` à 1.
+- Fonction et Trigger `insert_efficacite_when_new_type()` vont remplir la table `efficacite` de toutes les combinaisons de `type` possible et mettre leur `taux` à 1 par défaut.
 
 - Fonction `maj_efficacite (p_type_nom1 varchar, p_type_nom2 varchar, p_eff float)` va permettre de fixer le `taux` désigné par `p_eff` lorsqu'un `type.id`, désigner par `p_type_nom1`, se bat contre un autre `type.id` désigné par `p_type_nom2`.
 
