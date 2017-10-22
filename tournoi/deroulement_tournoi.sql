@@ -56,6 +56,7 @@ AS $$
         RAISE NOTICE 'nb_round = % cursor refreshed.', nb_round;
         CLOSE c_selectParticipant;
         OPEN c_selectParticipant(nb_round);
+
         -- Je compte combien de joueurs ont le nombre de points maximum
         -- S'il n'y en a qu'un, c'est celui qui gagne.
         SELECT COUNT(*) INTO v_players_max_pts
@@ -76,6 +77,9 @@ AS $$
       FETCH c_selectParticipant INTO row_participant1;
       FETCH c_selectParticipant INTO row_participant2;
 
+      -- pour fixer l'histoire du curseur qui ne VEUT PAS SE REDÉFINIR !!!!!!!!!!!!
+      EXIT WHEN NOT FOUND;
+
       -- récupérer le gagnant et lui attribuer les points
       SELECT combat(row_participant1.dresseur_pokemon_id, row_participant2.dresseur_pokemon_id) INTO v_pokemon_id_gg;
 
@@ -92,7 +96,7 @@ AS $$
 
     END LOOP;
 
-    CLOSE c_selectParticipant;
+    -- CLOSE c_selectParticipant;
     
     RETURN NEW;
 
