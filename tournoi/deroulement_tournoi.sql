@@ -39,6 +39,8 @@ AS $$
     nb_round := 0;
     tournoi_id := NEW.id;
 
+    OPEN c_selectParticipant(nb_round);
+
     LOOP
       -- Je sélectionne le joueur ayant le max de points
       SELECT MAX(participant.points) INTO v_max_pts
@@ -63,25 +65,18 @@ AS $$
         EXIT;
       END IF;
 
-      -- Do that with cursor and fetch !!
-      OPEN c_selectParticipant(nb_round);
-      LOOP
 
-        FETCH c_selectParticipant INTO row_participant1;
-        -- EXIT WHEN NOT FOUND;
+      -- récupération des participants qui vont combattre l'un contre l'autre.
+      FETCH c_selectParticipant INTO row_participant1;
+      FETCH c_selectParticipant INTO row_participant2;
 
-        FETCH c_selectParticipant INTO row_participant2;
-        EXIT WHEN NOT FOUND;
+      -- récupérer le gagnant et lui attribuer les points
+      SELECT combat(row_participant1.dresseur_pokemon_id, row_participant2.dresseur_pokemon_id) INTO v_pokemon_id_gg;
 
-        -- récupérer le gagnant et lui attribuer les points
-        SELECT combat(row_participant1.dresseur_pokemon_id, row_participant2.dresseur_pokemon_id) INTO v_pokemon_id_gg;
-
-        UPDATE participant
-          SET points = points + 5
-          WHERE dresseur_pokemon_id = v_pokemon_id_gg
-          AND tournoi_id = tournoi_id;
-
-      END LOOP;
+      UPDATE participant
+        SET points = points + 5
+        WHERE dresseur_pokemon_id = v_pokemon_id_gg
+        AND tournoi_id = NEW.id;
 
       nb_round := nb_round +1;
 
