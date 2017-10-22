@@ -19,9 +19,6 @@ AS $$
     -- Le pokemon qui gagne un combat
     v_pokemon_id_gg integer;
 
-    -- l'id du tournoi en cours
-    tournoi_id tournoi.id%TYPE;
-
     -- Ils vont s'affronterrrrrrr
     row_participant1 participant%ROWTYPE;
     row_participant2 participant%ROWTYPE;
@@ -37,7 +34,6 @@ AS $$
 
   BEGIN
     nb_round := 0;
-    tournoi_id := NEW.id;
 
     OPEN c_selectParticipant(nb_round);
 
