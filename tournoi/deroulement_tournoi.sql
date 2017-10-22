@@ -79,6 +79,8 @@ AS $$
       IF nb_round > 50 THEN
         RAISE EXCEPTION 'ENDLESS LOOP';
       END IF;
+      
+      RETURN NEW;
 
     END LOOP;
 
