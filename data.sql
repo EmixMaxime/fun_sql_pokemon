@@ -21,8 +21,8 @@ INSERT INTO type VALUES
 ;
 
 -- Insertion pokemons
-INSERT INTO pokemon (nom, type_id_1)
-  VALUES ('pikachu','ELE'),
+INSERT INTO pokemon (nom, type_id_1) VALUES 
+  ('pikachu','ELE'),
   ('raichu','ELE'),
   ('salameche','FEU'),
   ('reptincel','FEU'),
@@ -40,14 +40,14 @@ INSERT INTO pokemon (nom, type_id_1, type_id_2) VALUES
 
 -- Insertion dresseurs
 INSERT INTO dresseur (prenom, nom, pseudo) VALUES
-  (1, 'Dany', 'Capitain', 'America'),
-  (2, 'Remi', 'Synave', 'Grenouille'),
-  (3, 'Marguerite', 'Fernandez', 'Peu chère'),
-  (4, 'Anne', 'Pacou', 'Passpacou'),
-  (5, 'Severine', 'Letrez', 'Comptabilitey'),
-  (6, 'Bruno', 'Warin', 'James Dany Boonde'),
-  (7, 'Francois', 'Rousselle', 'Assembleur is bae'),
-  (8, 'Dominique', 'Dussart', 'Triggered')
+  ('Dany', 'Capitain', 'America'),
+  ('Remi', 'Synave', 'Grenouille'),
+  ('Marguerite', 'Fernandez', 'Peu chère'),
+  ('Anne', 'Pacou', 'Passpacou'),
+  ('Severine', 'Letrez', 'Comptabilitey'),
+  ('Bruno', 'Warin', 'James Dany Boonde'),
+  ('Francois', 'Rousselle', 'Assembleur is bae'),
+  ('Dominique', 'Dussart', 'Triggered')
 ;
 
 -- Insertion pokemons des dresseurs 
