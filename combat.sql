@@ -72,29 +72,13 @@ BEGIN
       v_vie2 := v_vie2 - degat_pok1_sur_pok2;
       
       -- Affichage stylé
-      RAISE NOTICE 'Le pokemon 1 attaque !';
-      IF efficacite_pok1_sur_pok2 > 1 THEN
-        RAISE NOTICE 'C est super efficace';
-      ELSE 
-        IF efficacite_pok1_sur_pok2 < 1 THEN
-          RAISE NOTICE 'Ce n est pas tres efficace';
-        END IF;
-      END IF;
-      RAISE NOTICE 'Il reste % PV au pokemon 2',v_vie2;
+      PERFORM  affichage_combat(1,efficacite_pok1_sur_pok2,v_vie2);
       
     ELSE 
       v_vie1 := v_vie1 - degat_pok2_sur_pok1;
       
       -- Affichage stylé
-      RAISE NOTICE 'Le pokemon 2 attaque !';
-      IF efficacite_pok2_sur_pok1 > 1 THEN
-        RAISE NOTICE 'C est super efficace';
-      ELSE 
-        IF efficacite_pok2_sur_pok1 < 1 THEN
-          RAISE NOTICE 'Ce n est pas tres efficace';
-        END IF;
-      END IF;
-      RAISE NOTICE 'Il reste % PV au pokemon 1',v_vie1;
+      PERFORM  affichage_combat(2,efficacite_pok2_sur_pok1,v_vie1);
       
     END IF;
 
@@ -104,30 +88,15 @@ BEGIN
       v_vie1 := v_vie1 - degat_pok2_sur_pok1;
       
       -- Affichage stylé
-      RAISE NOTICE 'Le pokemon 2 attaque !';
-      IF efficacite_pok2_sur_pok1 > 1 THEN
-        RAISE NOTICE 'C est super efficace';
-      ELSE 
-        IF efficacite_pok2_sur_pok1 < 1 THEN
-          RAISE NOTICE 'Ce n est pas tres efficace';
-        END IF;
-      END IF;
-      RAISE NOTICE 'Il reste % PV au pokemon 1',v_vie1;
+      PERFORM  affichage_combat(2,efficacite_pok2_sur_pok1,v_vie1);
       
     ELSE 
       IF vdresseur_pok2.vitesse > vdresseur_pok1.vitesse AND v_vie1 > 0 THEN
         v_vie2 := v_vie2 - degat_pok1_sur_pok2; 
         
           -- Affichage stylé
-        RAISE NOTICE 'Le pokemon 1 attaque !';
-        IF efficacite_pok1_sur_pok2 > 1 then
-          RAISE NOTICE 'C est super efficace';
-        ELSE 
-          IF efficacite_pok1_sur_pok2 < 1 then
-            RAISE NOTICE 'Ce n est pas tres efficace';
-          END IF;
-        END IF;
-        RAISE NOTICE 'Il reste % PV au pokemon 2',v_vie2;
+        PERFORM  affichage_combat(1,efficacite_pok1_sur_pok2,v_vie2);
+        
       END IF;
     END IF;
 
