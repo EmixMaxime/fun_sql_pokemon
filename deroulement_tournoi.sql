@@ -20,13 +20,13 @@ AS $$
     v_pokemon_id_gg integer;
 
     -- Ils vont s'affronterrrrrrr
-    row_participant1 participant%ROW;
-    row_participant2 participant%ROW;
+    row_participant1 participant%ROWTYPE;
+    row_participant2 participant%ROWTYPE;
 
-    c_selectParticipant CURSOR FOR
+    c_selectParticipant CURSOR(nb_round integer) FOR
       SELECT *
           FROM participant
-          INNER JOIN participant ON participant.tournoi_id = tournoi.id
+          INNER JOIN participant ON participant.tournoi_id = NEW.id
           WHERE participant.points = nb_round * 5;
           -- 5 = le nb de points gagnés lors d'un combat
 
@@ -65,6 +65,12 @@ AS $$
         -- récupérer le gagnant et lui attribuer les points
         
       END LOOP;
+
+      nb_round := nb_round +1;
+
+      IF nb_round > 50 THEN
+        RAISE EXCEPTION 'ENDLESS LOOP';
+      END IF;
 
     END LOOP;
 
