@@ -46,6 +46,8 @@ Cette fonction créé un tournoi. Ce tournoi n'est pas démarré, il faudra atte
 ## Déroulement d'un combat
 - Ajouter la fonction combat `combat`. Rôle : permettre à deux de pokémon de combattre ceux-ci vont s'infliger des dégâts en prenant en compte leur `vitesse` (ordre d'attaque), l'`attaque`, la `défense`, et le `taux` d'`efficacite` par rapport à leurs types respectifs afin de réduire la `vie` de l'autre pokémon à 0. Le pokémon gagnant recevra 1 `points_evolution`.
 
+- L'affichage est effectué par la fonction `affichage_combat`.
+
 - La fonction combat prendre pour paramètre les deux `id` de la table `dresseur_pokemon` des pokémon qui vont combattre.
 Exemple : SELECT combat(1,2);
 
