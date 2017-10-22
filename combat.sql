@@ -47,6 +47,7 @@ BEGIN
 	degat_pok2_sur_pok1 = vdresseur_pok2.attaque * efficacite_pok2_sur_pok1 - vdresseur_pok1.defense;
     
 
+  -- Gestion du cas où il n'y a pas de degat, le degat est donc initialisé à 1.
 	IF degat_pok1_sur_pok2 <= 0 THEN
 		degat_pok1_sur_pok2 = 1;
 	END IF;
