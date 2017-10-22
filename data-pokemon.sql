@@ -3,7 +3,7 @@
 -- Insérer les pokemon dans la base de données
 
 INSERT INTO pokemon (nom,type_id_1) VALUES 
-('Bulbizarre','PLA');,
+('Bulbizarre','PLA'),
 ('Herbizarre','PLA'),
 ('Florizarre','PLA'),
 ('Salamèche','FEU'),
